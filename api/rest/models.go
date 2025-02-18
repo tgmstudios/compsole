@@ -10,7 +10,7 @@ import (
 //
 //	@Description	Used as an input model for creating/updating Competitions
 type CompetitionInput struct {
-	Name                  string `json:"name" form:"name" binding:"required" example:"ISTS 'XX"`
+	Name                  string `json:"name" form:"name" binding:"required" example:"CCSO 'XX"`
 	CompetitionToProvider string `json:"competition_to_provider" form:"competition_to_provider" binding:"required" example:"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"`
 }
 
@@ -72,7 +72,7 @@ type ProviderEdge struct {
 //
 //	@Description	Used as an input model for creating/updating Teams
 type TeamInput struct {
-	Name              string `json:"name" form:"name" binding:"required" example:"ISTS 'XX"`
+	Name              string `json:"name" form:"name" binding:"required" example:"CCSO 'XX"`
 	TeamNumber        int    `json:"team_number" form:"team_number" binding:"required" example:"1"`
 	TeamToCompetition string `json:"team_to_competition" form:"team_to_competition" binding:"required" example:"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"`
 }

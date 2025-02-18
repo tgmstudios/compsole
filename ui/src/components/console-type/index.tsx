@@ -32,7 +32,7 @@ export default function ConsoleTypeSelect({
   onChange?: (value: ConsoleType) => void
 } & SelectProps) {
   return (
-    <FormControl variant="filled">
+    <FormControl variant="filled" style={{ display: 'none' }}>
       <InputLabel id="console-type-select-label">Console Type</InputLabel>
       <Select
         {...props}

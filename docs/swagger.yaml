@@ -67,7 +67,7 @@ definitions:
         example: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
         type: string
       name:
-        example: ISTS 'XX
+        example: CCSO 'XX
         type: string
     required:
     - competition_to_provider
@@ -198,7 +198,7 @@ definitions:
     description: Used as an input model for creating/updating Teams
     properties:
       name:
-        example: ISTS 'XX
+        example: CCSO 'XX
         type: string
       team_number:
         example: 1

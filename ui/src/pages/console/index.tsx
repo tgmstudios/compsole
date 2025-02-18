@@ -35,7 +35,7 @@ import {
 } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
 import { useSnackbar } from 'notistack'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState, useCallback } from 'react'
 import { useParams } from 'react-router-dom'
 import {
   ConsoleType,
@@ -106,13 +106,6 @@ export const ConsolePage: React.FC = (): React.ReactElement => {
     })
   const { enqueueSnackbar } = useSnackbar()
   const [consoleUrl, setConsoleUrl] = useState<string>('')
-  
-  useEffect(() => {
-    if (consoleUrl.startsWith("http://")) {
-      setConsoleUrl(consoleUrl.replace("http://", "https://"));
-    }
-  }, [consoleUrl]);
-
   const [consoleType, setConsoleType] = useState<ConsoleType>(ConsoleType.Novnc)
   const [fullscreenConsole, setFullscreenConsole] = useState<boolean>(false)
   const [rebootTypeMenuOpen, setRebootTypeMenuOpen] = useState(false)
@@ -147,49 +140,87 @@ export const ConsolePage: React.FC = (): React.ReactElement => {
     },
   ] = usePowerOffVmMutation()
 
+  const useCooldown = (initialCooldown: number) => {
+    const [isOnCooldown, setIsOnCooldown] = useState(false);
+    const [cooldownTime, setCooldownTime] = useState(initialCooldown);
+  
+    const startCooldown = useCallback(() => {
+      setIsOnCooldown(true);
+      const timer = setInterval(() => {
+        setCooldownTime((prevTime: number) => {
+          if (prevTime <= 1000) {
+            clearInterval(timer);
+            setIsOnCooldown(false);
+            return initialCooldown;
+          }
+          return prevTime - 1000;
+        });
+      }, 1000);
+    }, [initialCooldown]);
+  
+    return [isOnCooldown, cooldownTime, startCooldown] as const;
+  };
+
+  const [refreshCooldown, refreshTime, startRefreshCooldown] = useCooldown(5000);
+  const [shutdownCooldown, shutdownTime, startShutdownCooldown] = useCooldown(10000);
+  const [powerOnCooldown, powerOnTime, startPowerOnCooldown] = useCooldown(10000);
+  const [rebootCooldown, rebootTime, startRebootCooldown] = useCooldown(15000);
+
   const handleRefreshConsoleClick = () => {
-    if (id)
-      getVmConsoleRefetch({
-        vmObjectId: id,
-        consoleType,
-      }).then(
-        () =>
-          enqueueSnackbar('Refreshed Console', {
-            variant: 'success',
-          }),
-        (err) =>
-          enqueueSnackbar(`Failed to Refresh Console: ${err}`, {
-            variant: 'error',
-          })
-      )
+    if (!refreshCooldown) {
+      startRefreshCooldown();
+      if (id)
+        getVmConsoleRefetch({
+          vmObjectId: id,
+          consoleType,
+        }).then(
+          () =>
+            enqueueSnackbar('Refreshed Console', {
+              variant: 'success',
+            }),
+          (err) =>
+            enqueueSnackbar(`Failed to Refresh Console: ${err}`, {
+              variant: 'error',
+            })
+        )
+    }
   }
 
   const handleRebootClick = () => {
-    if (id)
-      rebootVm({
-        variables: {
-          vmObjectId: id,
-          rebootType: options[selectedRebootType].value,
-        },
-      })
+    if (!rebootCooldown) {
+      startRebootCooldown();
+      if (id)
+        rebootVm({
+          variables: {
+            vmObjectId: id,
+            rebootType: options[selectedRebootType].value,
+          },
+        })
+    }
   }
 
   const handlePowerOnClick = () => {
-    if (id)
-      powerOn({
-        variables: {
-          vmObjectId: id,
-        },
-      })
+    if (!powerOnCooldown) {
+      startPowerOnCooldown();
+      if (id)
+        powerOn({
+          variables: {
+            vmObjectId: id,
+          },
+        })
+    }
   }
 
   const handlePowerOffClick = () => {
-    if (id)
-      powerOff({
-        variables: {
-          vmObjectId: id,
-        },
-      })
+    if (!shutdownCooldown) {
+      startShutdownCooldown();
+      if (id)
+        powerOff({
+          variables: {
+            vmObjectId: id,
+          },
+        })
+    }
   }
 
   const handleRebootTypeClick = (
@@ -527,7 +558,7 @@ export const ConsolePage: React.FC = (): React.ReactElement => {
               disabled={isVmLocked()}
               sx={VmButtonStyles}
             >
-              Refresh Console
+              {refreshCooldown ? `Refresh (${Math.floor(refreshTime / 1000)}s)` : 'Refresh Console'}
             </LoadingButton>
             <LoadingButton
               color="error"
@@ -540,7 +571,7 @@ export const ConsolePage: React.FC = (): React.ReactElement => {
               disabled={isVmLocked()}
               sx={VmButtonStyles}
             >
-              Shutdown
+              {shutdownCooldown ? `Shutdown (${Math.floor(shutdownTime / 1000)}s)` : 'Shutdown'}
             </LoadingButton>
             <LoadingButton
               color="success"
@@ -553,7 +584,7 @@ export const ConsolePage: React.FC = (): React.ReactElement => {
               disabled={isVmLocked()}
               sx={VmButtonStyles}
             >
-              Power On
+              {powerOnCooldown ? `Power On (${Math.floor(powerOnTime / 1000)}s)` : 'Power On'}
             </LoadingButton>
             <LoadingButton
               color="warning"
@@ -566,7 +597,7 @@ export const ConsolePage: React.FC = (): React.ReactElement => {
               disabled={isVmLocked()}
               sx={VmButtonStyles}
             >
-              {options[selectedRebootType].title}
+              {rebootCooldown ? `${options[selectedRebootType].title} (${Math.floor(rebootTime / 1000)}s)` : options[selectedRebootType].title}
             </LoadingButton>
             <Button
               color="warning"

@@ -1655,7 +1655,7 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string",
-                    "example": "ISTS 'XX"
+                    "example": "CCSO 'XX"
                 }
             }
         },
@@ -1829,7 +1829,7 @@ const docTemplate = `{
             "properties": {
                 "name": {
                     "type": "string",
-                    "example": "ISTS 'XX"
+                    "example": "CCSO 'XX"
                 },
                 "team_number": {
                     "type": "integer",

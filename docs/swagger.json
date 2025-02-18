@@ -1648,7 +1648,7 @@
                 },
                 "name": {
                     "type": "string",
-                    "example": "ISTS 'XX"
+                    "example": "CCSO 'XX"
                 }
             }
         },
@@ -1822,7 +1822,7 @@
             "properties": {
                 "name": {
                     "type": "string",
-                    "example": "ISTS 'XX"
+                    "example": "CCSO 'XX"
                 },
                 "team_number": {
                     "type": "integer",
