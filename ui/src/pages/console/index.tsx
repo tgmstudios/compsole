@@ -106,6 +106,13 @@ export const ConsolePage: React.FC = (): React.ReactElement => {
     })
   const { enqueueSnackbar } = useSnackbar()
   const [consoleUrl, setConsoleUrl] = useState<string>('')
+  
+  useEffect(() => {
+    if (consoleUrl.startsWith("http://")) {
+      setConsoleUrl(consoleUrl.replace("http://", "https://"));
+    }
+  }, [consoleUrl]);
+
   const [consoleType, setConsoleType] = useState<ConsoleType>(ConsoleType.Novnc)
   const [fullscreenConsole, setFullscreenConsole] = useState<boolean>(false)
   const [rebootTypeMenuOpen, setRebootTypeMenuOpen] = useState(false)
