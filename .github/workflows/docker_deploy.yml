@@ -24,7 +24,7 @@ jobs:
       uses: docker/login-action@v3
       with:
         registry: registry.psuccso.org
-        username: robot$robot$compsole+github
+        username: robot$compsole+github
         password: ${{ secrets.DOCKER_PASSWORD }}
     - name: Generate Tag Names
       run: |
