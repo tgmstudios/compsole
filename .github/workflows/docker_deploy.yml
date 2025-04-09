@@ -23,8 +23,8 @@ jobs:
     - name: Login to TGM Docker Registry
       uses: docker/login-action@v3
       with:
-        registry: registry.tgm.one
-        username: robot$ccso-compsole+github
+        registry: registry.psuccso.org
+        username: robot$robot$compsole+github
         password: ${{ secrets.DOCKER_PASSWORD }}
     - name: Generate Tag Names
       run: |
@@ -46,9 +46,9 @@ jobs:
         file: ./Dockerfile
         push: true
         tags: |
-          registry.tgm.one/ccso-compsole/${{ env.TAG_LATEST }}
-          registry.tgm.one/ccso-compsole/${{ env.TAG_COMMIT }}
-        cache-from: type=registry,ref=registry.tgm.one/ccso-compsole/${{ env.TAG_LATEST }}
+          registry.psuccso.org/compsole/${{ env.TAG_LATEST }}
+          registry.psuccso.org/compsole/${{ env.TAG_COMMIT }}
+        cache-from: type=registry,ref=registry.psuccso.org/compsole/${{ env.TAG_LATEST }}
         cache-to: type=inline
 
   build-compsole-ui:
@@ -68,8 +68,8 @@ jobs:
     - name: Login to TGM Docker Registry
       uses: docker/login-action@v3
       with:
-        registry: registry.tgm.one
-        username: robot$ccso-compsole+github
+        registry: registry.psuccso.org
+        username: robot$compsole+github
         password: ${{ secrets.DOCKER_PASSWORD }}
     - name: Generate Tag Names
       run: |
@@ -91,7 +91,7 @@ jobs:
         file: ./ui/Dockerfile
         push: true
         tags: |
-          registry.tgm.one/ccso-compsole/${{ env.TAG_LATEST }}
-          registry.tgm.one/ccso-compsole/${{ env.TAG_COMMIT }}
-        cache-from: type=registry,ref=registry.tgm.one/ccso-compsole/${{ env.TAG_LATEST }}
+          registry.psuccso.org/compsole/${{ env.TAG_LATEST }}
+          registry.psuccso.org/compsole/${{ env.TAG_COMMIT }}
+        cache-from: type=registry,ref=registry.psuccso.org/compsole/${{ env.TAG_LATEST }}
         cache-to: type=inline
